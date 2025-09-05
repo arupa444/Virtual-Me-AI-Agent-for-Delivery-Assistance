@@ -1,0 +1,79 @@
+START
+
+INPUT: delivery_request (student_name OR roll_number)
+
+1.  QUERY SYSTEM:
+    IF student_name provided:
+        search students[] by "Name"
+    ELSE IF roll_number provided:
+        search students[] by "roll_number"
+
+    IF match found:
+        SET active_student = matched_student
+    ELSE:
+        RETURN "Sorry, I can’t find this student in the database. Please re-check name/roll number."
+        EXIT
+
+2.  INITIAL GREETING:
+    → "Hello! You’re delivering a parcel for {active_student.Name} (Roll: {active_student.roll_number}), Room {active_student.room_number}."
+
+3.  CHECK AVAILABILITY:
+    GET current_day + current_time
+    LOOKUP availability[day]
+    IF within available_slots:
+        CONTINUE delivery
+    ELSE:
+        RETURN "Student is in class right now. Best time slots: {available_slots}."
+
+4.  CAMPUS ENTRY FLOW:
+    IF security asks "who/where":
+        → Use fallbacks.security_details with placeholders replaced
+        → Use fallbacks.security_destination with placeholders replaced
+
+5.  NAVIGATION LOOP:
+    SET current_step = "step1"
+    WHILE current_step != "completed":
+        PROMPT delivery_guy: "Are you at {landmark/context for current_step}?"
+
+        WAIT for delivery_guy response
+
+        --- CASE A: Expected Landmark ---
+        IF response matches navigation_context.confirm_step trigger:
+            RETURN navigation_context.confirm_step.response
+            MOVE TO next step in decision_tree
+
+        --- CASE B: Wrong Landmark (correction needed) ---
+        IF response matches navigation_context.correction_step trigger:
+            RETURN navigation_context.correction_step.response
+            RESET current_step = correction_step
+
+        --- CASE C: Unexpected / Lost ---
+        IF response matches navigation_context.lost trigger:
+            RETURN navigation_context.lost.response
+            ASK "What nearest building/landmark do you see?"
+            LOOP BACK to match context
+
+6.  ARRIVAL AT HOSTEL:
+    IF response matches "landmark_ug_hostel":
+        RETURN "Great, go to reception and mention delivery for {active_student.Name}, Room {active_student.room_number}."
+
+7.  INSIDE HOSTEL:
+    DETERMINE block type by prefix (G or B)
+    IF B-block:
+        DETERMINE floor using 3-digit number (1xx = 1st, 2xx = 2nd, 3xx = 3rd)
+        GUIDE using navigation_steps[step12 → step15]
+
+8.  ROOM STATUS CHECK:
+    IF room locked from outside:
+        EXECUTE fallbacks.room_locked_outside
+    ELSE IF room locked from inside:
+        EXECUTE fallbacks.room_locked_inside
+    ELSE:
+        DELIVER parcel directly
+
+9.  SPECIAL CONDITIONS:
+    - IF parcel is large → corridor drop allowed
+    - IF weather = rain → execute fallbacks.rain_weather
+    - ALWAYS after reception drop → SEND WhatsApp alert to {active_student.whatsappNo}
+
+END
