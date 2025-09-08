@@ -31,7 +31,7 @@
 
   "location": {
     "address": "Nijigada, Kurki, Plot No:12(A, Harirajpur, Kakudia, Odisha 752050",
-    "pin code": 752050,
+    "pin_code": 752050,
     "landmarks": [
       "XIM University",
       "SBI ATM",
@@ -53,9 +53,7 @@
       ]
     },
     "sunday": {
-      "available_slots": [
-        "6:00 AM - 9:00 PM"
-      ]
+      "available_slots": ["6:00 AM - 9:00 PM"]
     },
     "gate_closing_time": "10:00 PM"
   },
@@ -101,7 +99,7 @@
     "uncertain_location": "Can you find any landmark from {landmarks}?",
     "wrong_area": "Okay, you are somewhere else. Try searching Google Maps for: {address}",
     "landmarks_confirmed": "Okay, go to the main gate (left one from your projection), mention that you are here to deliver a package to one of the XIM students.",
-    "security_details": "You can say his name is {Name}, he is pursuing his {degree} and the roll no is {roll_number}.",
+    "security_details": "You can say his/her name is {Name}, he/she is pursuing {degree} and the roll no is {roll_number}.",
     "security_destination": "Tell him I will visit UG Boys Hostel.",
     "room_locked_outside": "If the parcel is large, leave it in the corridor safely. If small, find nearby locker and search for {room_number} safe. If locked, try knocking nearest rooms. If nothing works, submit at reception and inform via WhatsApp {whatsappNo}.",
     "room_locked_inside": "Try knocking. If no response, knock nearest rooms and hand the parcel.",
@@ -110,12 +108,19 @@
 
   "navigation_context": {
     "landmark_chapel": {
-      "trigger_phrases": ["I can see a chapel", "There is a chapel", "I reached chapel"],
+      "trigger_phrases": [
+        "I can see a chapel",
+        "There is a chapel",
+        "I reached chapel"
+      ],
       "response": "You are on the wrong path. Please go back to the last two-way split and take the LEFT path towards UG Boys Hostel instead of the chapel.",
       "correction_step": "step3"
     },
     "landmark_main_building": {
-      "trigger_phrases": ["I see the main building", "Main campus building is here"],
+      "trigger_phrases": [
+        "I see the main building",
+        "Main campus building is here"
+      ],
       "response": "Good, you are on the correct path. Keep moving straight.",
       "confirm_step": "step4"
     },
@@ -160,9 +165,43 @@
       "confirm_step": "step10"
     },
     "lost": {
-      "trigger_phrases": ["I am lost", "I can’t figure it out", "Nothing matches"],
+      "trigger_phrases": [
+        "I am lost",
+        "I can’t figure it out",
+        "Nothing matches"
+      ],
       "response": "No worries. Please share your nearest landmark and I’ll guide you back on track."
     }
+  },
+
+  "placeholders": {
+    "{Name}": "active_student.Name",
+    "{room_number}": "active_student.room_number",
+    "{degree}": "active_student.degree",
+    "{roll_number}": "active_student.roll_number",
+    "{phoneNo}": "active_student.phoneNo",
+    "{whatsappNo}": "active_student.whatsappNo",
+    "{emergency_contact}": "active_student.emergency_contact"
+  },
+
+  "delivery_status": {
+    "current_step": "step1",
+    "completed": false,
+    "last_landmark": ""
+  },
+
+  "emergency_handling": {
+    "lost_or_blocked": "Call {emergency_contact} or contact campus security.",
+    "lost_on_route": "Share nearest landmark. AI will recalc route."
+  },
+
+  "weather": {
+    "current": "clear",
+    "fallback": "fallbacks.rain_weather"
+  },
+
+  "whatsapp_alert": {
+    "template": "Hi {Name}, your parcel has been delivered to Room {room_number} at {time}."
   },
 
   "query_system": {
