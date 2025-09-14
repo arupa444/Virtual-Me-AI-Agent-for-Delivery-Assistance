@@ -1,1 +1,4 @@
 faster-whisper
+torch
+torchvision
+torchaudio
